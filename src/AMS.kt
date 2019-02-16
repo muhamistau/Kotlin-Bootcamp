@@ -6,14 +6,13 @@ fun main(args: Array<String>) {
     // Extra
     var fortune: String
     for (i in 1..10) {
-        fortune = getFortuneCookie()
-        println("Your fortune is: ${getFortuneCookie()}")
+        fortune = getFortuneCookie(getBirthday())
+        println("Your fortune is: $fortune")
         if (fortune.contains("Take")) break
     }
 }
 
-fun getFortuneCookie() : String {
-
+fun getFortuneCookie(birthday: Int) : String {
     val fortuneList: List<String> = listOf(
         "You will have a great day!",
         "Things will go well for you today.",
@@ -24,9 +23,15 @@ fun getFortuneCookie() : String {
         "Treasure your friends because they are your greatest fortune."
     )
 
+    val index = when (birthday) {
+        in 1..7 -> 4
+        28,31 -> 2
+        else -> birthday.rem(fortuneList.size)
+    }
+    return fortuneList[index]
+}
+
+fun getBirthday() : Int {
     print("\nEnter your birthday: ")
-
-    val birthday = readLine()?.toIntOrNull() ?: 1
-
-    return fortuneList[birthday.rem(fortuneList.size)]
+    return readLine()?.toIntOrNull() ?: 1
 }
