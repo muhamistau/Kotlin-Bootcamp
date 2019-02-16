@@ -7,6 +7,30 @@ fun main(args: Array<String>) {
     repeat(2) {
         println("A fish is swimming")
     }
+
+    eagerExample()
+}
+
+fun eagerExample() {
+    val decorations = listOf("rock", "pagoda", "plastic plant", "alligator", "flowerpot")
+
+    val eager = decorations.filter { it[0] == 'p' } // filter every elements that starts with p (') means char
+    println(eager)
+
+    // Apply filter lazily
+    val filtered = decorations.asSequence().filter { it[0] == 'p' }
+    println(filtered)
+    println(filtered.toList())
+
+    // Apply map lazily
+    val lazyMap = decorations.asSequence().map {
+        println("map: $it")
+        it
+    }
+
+    println(lazyMap)
+    println("first: ${lazyMap.first()}")
+    println("all: ${lazyMap.toList()}")
 }
 
 fun feedTheFish() {
@@ -55,4 +79,19 @@ fun shouldChangeWater(day: String, temp: Int = 22, dirty: Int = getDirtySensorRe
         isSunday(day) -> true
         else -> false
     }
+}
+
+var dirty = 20
+
+val waterFilter: (Int)-> Int = { dirty -> dirty / 2}
+fun feedFish(dirty: Int) = dirty +10
+
+fun updateDirty(dirty: Int, operation: (Int) -> Int): Int {
+    return operation(dirty)
+}
+
+fun dirtyProcessor() {
+    dirty = updateDirty(dirty, waterFilter)
+    dirty = updateDirty(dirty, ::feedFish)
+    dirty = updateDirty(dirty) { dirty -> dirty + 50 }
 }
